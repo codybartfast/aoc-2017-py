@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 import re
 import sys
@@ -5,9 +6,7 @@ import sys
 YEAR = "2017"
 
 # pot mods:
-#   - format timings like time (or go)
-#   - add completion date
-#   - add machine info ?
+#   - 
 
 def get_day():
     filename = Path(sys._getframe(2).f_code.co_filename).name
@@ -81,14 +80,55 @@ def present(text, extra_args, parse, part1, part2):
 
     pc_stop = time.perf_counter()
 
+    parse_time = pc_parse_after - pc_parse_before
+    part1_time = pc_part1_after - pc_part1_before
+    part2_time = pc_part2_after - pc_part2_before
+    elapsed = pc_stop - pc_start
+
+    bar_width = 32
     h_print()
     h_print("Timings")
-    h_print("---------------------")
-    h_print(f"  Parse: {pc_parse_after - pc_parse_before:12.6f}")
-    h_print(f" Part 1: {pc_part1_after - pc_part1_before:12.6f}")
-    h_print(f" Part 2: {pc_part2_after - pc_part2_before:12.6f}")
-    h_print(f"Elapsed: {pc_stop - pc_start:12.6f}")
+    h_print("-" * bar_width)
+    h_print(f"  Parse: {parse_time:12.6f} - {friendly_time(parse_time)}")
+    h_print(f" Part 1: {part1_time:12.6f}")
+    h_print(f" Part 2: {part2_time:12.6f}")
+    h_print(f"Elapsed: {elapsed:12.6f}")
+    h_print("-" * bar_width)
+    h_print()
+    h_print(f"   Date: {datetime.now().strftime("%B %Y")}")
+    h_print(f"Machine: {machine()}")
     print()
+
+def friendly_time(span):
+    def format(span):
+        places = 3
+        if span >= 10:
+            places = 2
+        elif span >= 100:
+            places = 1
+        elif span >= 1000:
+            places = 0
+        return f"{span:4.{places}}"
+
+    if span < 0.002:
+        span *= 1_000_000
+        return format(span) + " µs"
+    return "write more code"
+
+def machine():
+    fp = machine_fingerprint()
+    return {
+        "277d43f": "MacBook M4"
+    }.get(fp, fp)
+    
+
+def machine_fingerprint():
+    from hashlib import md5
+    import socket
+    import uuid
+
+    fp = f"on the back in Nordic Elvish:{socket.gethostname()}:{uuid.getnode()}"
+    return md5(fp.encode()).hexdigest()[:7]
 
 
 def read_glyphs(glyphs):
@@ -114,3 +154,5 @@ def read_glyphs(glyphs):
     glyph_dict = dict(zip(split_glyphs(glyphabet), alphabet))
 
     return "".join(glyph_dict[glyph] for glyph in split_glyphs(glyphs))
+
+
