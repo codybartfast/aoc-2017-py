@@ -1,5 +1,6 @@
 from datetime import datetime
 from pathlib import Path
+import platform
 import re
 import sys
 
@@ -85,18 +86,19 @@ def present(text, extra_args, parse, part1, part2):
     part2_time = pc_part2_after - pc_part2_before
     elapsed = pc_stop - pc_start
 
-    bar_width = 32
+    bar_width = 33
     h_print()
     h_print("Timings")
     h_print("-" * bar_width)
-    h_print(f"  Parse: {parse_time:12.6f} - {friendly_time(parse_time)}")
-    h_print(f" Part 1: {part1_time:12.6f}")
-    h_print(f" Part 2: {part2_time:12.6f}")
-    h_print(f"Elapsed: {elapsed:12.6f}")
+    h_print(f"  Parse: {parse_time:12.6f} {friendly_time(parse_time)}")
+    h_print(f" Part 1: {part1_time:12.6f} {friendly_time(part1_time)}")
+    h_print(f" Part 2: {part2_time:12.6f} {friendly_time(part2_time)}")
+    h_print(f"Elapsed: {elapsed:12.6f} {friendly_time(elapsed)}")
     h_print("-" * bar_width)
     h_print()
     h_print(f"   Date: {datetime.now().strftime("%B %Y")}")
     h_print(f"Machine: {machine()}")
+    h_print(f" Python: {platform.python_version()}")
     print()
 
 def friendly_time(span):
@@ -107,10 +109,10 @@ def friendly_time(span):
         elif span >= 100:
             places = 1
         elif span >= 1000:
-            places = 0
-        return f"{span:4.{places}}"
+            assert False
+        return " " * (places - 1) + f"{span:.{places}f}" + " " * (3 - places) 
 
-    if span < 0.002:
+    if span <= 0.001:
         span *= 1_000_000
         return format(span) + " µs"
     return "write more code"

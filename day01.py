@@ -1,15 +1,9 @@
 def parse(text):
-    def parse_line(line):
-        parts = line.split()
-        return [part for part in parts]
-
-    lines = text.splitlines()
-    return [parse_line(line) for line in lines]
+    return text
 
 
 def part1(data, args, p1_state):
-    print(f"\n{data}\n")
-    return "ans1"
+    return sum(int(c1) for c1, c2 in zip(data, data[1:] + data[0]) if c1 == c2)
 
 
 def part2(data, args, p1_state):
