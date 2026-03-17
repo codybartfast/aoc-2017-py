@@ -2,13 +2,9 @@ from pathlib import Path
 import re
 import sys
 
-YEAR = "2016"
+YEAR = "2017"
 
 # pot mods:
-#   - template - could make jingle singature (text, filepath, args) because
-#     keeps filepath and args togeather and more closely reflects logic: if get
-#     text then don't look at filepath
-#   - maybe ##### to separate runner from interesting stuff
 #   - format timings like time (or go)
 #   - add completion date
 #   - add machine info ?
