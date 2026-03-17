@@ -7,7 +7,8 @@ import sys
 YEAR = "2017"
 
 # pot mods:
-#   - 
+#   -
+
 
 def get_day():
     filename = Path(sys._getframe(2).f_code.co_filename).name
@@ -88,41 +89,45 @@ def present(text, extra_args, parse, part1, part2):
 
     bar_width = 33
     h_print()
+    h_print()
     h_print("Timings")
     h_print("-" * bar_width)
-    h_print(f"  Parse: {parse_time:12.6f} {friendly_time(parse_time)}")
-    h_print(f" Part 1: {part1_time:12.6f} {friendly_time(part1_time)}")
-    h_print(f" Part 2: {part2_time:12.6f} {friendly_time(part2_time)}")
-    h_print(f"Elapsed: {elapsed:12.6f} {friendly_time(elapsed)}")
+    h_print(f"  Parse: {parse_time:12.6f}  {friendly_time(parse_time)}")
+    h_print(f" Part 1: {part1_time:12.6f}  {friendly_time(part1_time)}")
+    h_print(f" Part 2: {part2_time:12.6f}  {friendly_time(part2_time)}")
+    h_print(f"Elapsed: {elapsed:12.6f}  {friendly_time(elapsed)}")
     h_print("-" * bar_width)
     h_print()
-    h_print(f"   Date: {datetime.now().strftime("%B %Y")}")
+    h_print(f"   Date: {datetime.now().strftime('%B %Y')}")
     h_print(f"Machine: {machine()}")
     h_print(f" Python: {platform.python_version()}")
     print()
 
+
 def friendly_time(span):
     def format(span):
         places = 3
-        if span >= 10:
-            places = 2
+        if span >= 1000:
+            assert False
         elif span >= 100:
             places = 1
-        elif span >= 1000:
-            assert False
-        return " " * (places - 1) + f"{span:.{places}f}" + " " * (3 - places) 
+        elif span >= 10:
+            places = 2
+        return " " * (places - 1) + f"{span:.{places}f}" + " " * (3 - places)
 
-    if span <= 0.001:
+    if span < 0.001:
         span *= 1_000_000
         return format(span) + " µs"
+    if span < 1:
+        span *= 1_000
+        return format(span) + " ms"
     return "write more code"
+
 
 def machine():
     fp = machine_fingerprint()
-    return {
-        "277d43f": "MacBook M4"
-    }.get(fp, fp)
-    
+    return {"277d43f": "MacBook M4"}.get(fp, fp)
+
 
 def machine_fingerprint():
     from hashlib import md5
@@ -156,5 +161,3 @@ def read_glyphs(glyphs):
     glyph_dict = dict(zip(split_glyphs(glyphabet), alphabet))
 
     return "".join(glyph_dict[glyph] for glyph in split_glyphs(glyphs))
-
-

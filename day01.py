@@ -7,7 +7,8 @@ def part1(data, args, p1_state):
 
 
 def part2(data, args, p1_state):
-    return "ans2"
+    half = len(data) // 2
+    return sum(int(c1) for c1, c2 in zip(data, data[half:] + data[:half]) if c1 == c2)
 
 
 # Runner
