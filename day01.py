@@ -1,14 +1,41 @@
+#  2017 Day 01
+#  ===========
+#
+#  Part 1: 1097
+#  Part 2: 1188
+#
+#
+#  Timings
+#  ---------------------------------
+#    Parse:     0.000000    0.250 µs
+#   Part 1:     0.000049   49.42  µs
+#   Part 2:     0.000047   47.42  µs
+#  Elapsed:     0.000138  137.5   µs
+#  ---------------------------------
+#
+#     Date: March 2026
+#  Machine: MacBook M4
+#   Python: 3.14.3
+
+
 def parse(text):
     return text
 
 
-def part1(data, args, p1_state):
-    return sum(int(c1) for c1, c2 in zip(data, data[1:] + data[0]) if c1 == c2)
+def solve_captcha(captcha, offset):
+    return sum(
+        int(c1)
+        for c1, c2 in zip(captcha, captcha[offset:] + captcha[:offset])
+        if c1 == c2
+    )
 
 
-def part2(data, args, p1_state):
-    half = len(data) // 2
-    return sum(int(c1) for c1, c2 in zip(data, data[half:] + data[:half]) if c1 == c2)
+def part1(captcha, args, p1_state):
+    return solve_captcha(captcha, 1)
+
+
+def part2(captcha, args, p1_state):
+    return solve_captcha(captcha, len(captcha) // 2)
 
 
 # Runner

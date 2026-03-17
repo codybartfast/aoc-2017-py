@@ -3,6 +3,7 @@ from pathlib import Path
 import platform
 import re
 import sys
+import time
 
 YEAR = "2017"
 
@@ -42,7 +43,6 @@ def get_filepath(file):
 
 
 def present(text, extra_args, parse, part1, part2):
-    import time
 
     def h_print(*args):
         print("# ", *args)
