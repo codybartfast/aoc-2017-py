@@ -1,18 +1,25 @@
 def parse(text):
     def parse_line(line):
         parts = line.split()
-        return [int(part) for part in parts]
+        return sorted([int(part) for part in parts])
 
     lines = text.splitlines()
     return [parse_line(line) for line in lines]
 
 
 def part1(sheet, args, p1_state):
-    return sum(max(row) - min(row) for row in sheet)
+    return sum(row[-1] - row[0] for row in sheet)
+
+
+def check2(row):
+    for i, d in enumerate(row):
+        for n in row[i + 1 :]:
+            if n % d == 0:
+                return n // d
 
 
 def part2(sheet, args, p1_state):
-    return "ans2"
+    return sum(check2(row) for row in sheet)
 
 
 # Runner
