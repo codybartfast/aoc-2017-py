@@ -57,7 +57,7 @@ def present(text, extra_args, parse, part1, part2):
     pc_start = time.perf_counter()
     day = get_day()
 
-    title = f"{YEAR} Day {day}"
+    title = f"{YEAR} Day {day.lstrip("0")}"
 
     print("\n")
     h_print(title)
@@ -87,15 +87,14 @@ def present(text, extra_args, parse, part1, part2):
     part2_time = pc_part2_after - pc_part2_before
     elapsed = pc_stop - pc_start
 
-    bar_width = 34
-    h_print()
+    bar_width = 38
     h_print()
     h_print("Timings")
     h_print("-" * bar_width)
-    h_print(f"  Parse: {parse_time:12.6f}s  ({friendly_time(parse_time)})")
-    h_print(f" Part 1: {part1_time:12.6f}s  ({friendly_time(part1_time)})")
-    h_print(f" Part 2: {part2_time:12.6f}s  ({friendly_time(part2_time)})")
-    h_print(f"Elapsed: {elapsed:12.6f}s  ({friendly_time(elapsed)})")
+    h_print(f"    Parse: {parse_time:12.6f}s  ({friendly_time(parse_time)})")
+    h_print(f"   Part 1: {part1_time:12.6f}s  ({friendly_time(part1_time)})")
+    h_print(f"   Part 2: {part2_time:12.6f}s  ({friendly_time(part2_time)})")
+    h_print(f"  Elapsed: {elapsed:12.6f}s  ({friendly_time(elapsed)})")
     h_print("-" * bar_width)
     h_print()
     h_print(f"   Date:  {datetime.now().strftime('%B %Y')}")
