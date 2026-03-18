@@ -1,5 +1,4 @@
 from itertools import islice
-from math import isqrt
 
 
 def parse(text):
@@ -7,43 +6,62 @@ def parse(text):
 
 
 def walk():
-    n = 1
     x, y = (0, 0)
     length = 0
-    yield (x, y), n
+    yield (x, y)
     while True:
         length += 1
         # go right
         for _ in range(length):
-            n += 1
             x += 1
-            yield (x, y), n
+            yield (x, y)
         # go up
         for _ in range(length):
-            n += 1
             y -= 1
-            yield (x, y), n
+            yield (x, y)
 
         length += 1
         # go left
         for _ in range(length):
-            n += 1
             x -= 1
-            yield (x, y), n
+            yield (x, y)
         # go down
         for _ in range(length):
-            n += 1
             y += 1
-            yield (x, y), n
+            yield (x, y)
+
+
+def stress_test(target, walk_it):
+    values = {(0, 0): 1}
+    next(walk_it)
+    while True:
+        x, y = next(walk_it)
+        value = sum(
+            values.get((x + dx, y + dy), 0)
+            for dx, dy in [
+                (-1, -1),
+                (0, -1),
+                (1, -1),
+                (-1, 0),
+                (1, 0),
+                (-1, 1),
+                (0, 1),
+                (1, 1),
+            ]
+        )
+        if value > target:
+            return value
+        else:
+            values[(x, y)] = value
 
 
 def part1(data, args, p1_state):
-    (x, y), _ = next(islice(walk(), data - 1, None))
+    x, y = next(islice(walk(), data - 1, None))
     return abs(x) + abs(y)
 
 
 def part2(data, args, p1_state):
-    return "ans2"
+    return stress_test(data, iter(walk()))
 
 
 # Runner
