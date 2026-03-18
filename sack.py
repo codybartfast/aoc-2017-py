@@ -126,15 +126,15 @@ def friendly_time(span):
 
 def machine():
     fp = machine_fingerprint()
-    return {"277d43f": "MacBook M4"}.get(fp, fp)
+    return {"fffcc23": "MacBook M4"}.get(fp, fp)
 
 
 def machine_fingerprint():
     from hashlib import md5
-    import socket
-    import uuid
+    from os import cpu_count
+    from platform import node, machine
 
-    fp = f"on the back in Nordic Elvish:{socket.gethostname()}:{uuid.getnode()}"
+    fp = f"on the back in Nordic Elvish:{node()}:{machine()}:{cpu_count()}"
     return md5(fp.encode()).hexdigest()[:7]
 
 
