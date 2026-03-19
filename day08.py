@@ -9,6 +9,7 @@ def parse(text):
 
 def run(prog):
     regs = {}
+    maximum = -(10 ** 18)
     for mod_reg, op, diff, comp_reg, comp, comp_val in prog:
         comp_reg_val = regs.get(comp_reg, 0)
         match comp:
@@ -28,18 +29,22 @@ def run(prog):
                 assert False, comp
         if do_act:
             diff = diff if op == "inc" else -diff
-            regs[mod_reg] = regs.get(mod_reg, 0) + diff
-    return regs
+            val = regs.get(mod_reg, 0) + diff
+            if val > maximum:
+                maximum = val
+            regs[mod_reg] = val 
+    return regs, maximum
 
 
 def part1(prog, args, p1_state):
     # print(f"\n{data}\n")
-    return max(run(prog).values())
-    return "ans1"
+    registers, maximum = run(prog)
+    p1_state.value = maximum
+    return max(registers.values())
 
 
-def part2(data, args, p1_state):
-    return "ans2"
+def part2(_, __, p1_state):
+    return p1_state.value
 
 
 # Runner
