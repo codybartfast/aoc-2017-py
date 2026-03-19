@@ -9,13 +9,12 @@ def parse(text):
 
 def part1(pass_phrases, args, p1_state):
     print(f"\n{pass_phrases}\n")
-    return sum(
-        1 for phrase in pass_phrases if len(phrase) == len(set(phrase))
-    )
+    return sum(1 for phrase in pass_phrases if len(phrase) == len(set(phrase)))
 
 
-def part2(data, args, p1_state):
-    return "ans2"
+def part2(phrases, args, p1_state):
+    normalised = (list(map(tuple, map(sorted, phrase))) for phrase in phrases)
+    return sum(1 for norm in normalised if len(norm) == len(set(norm)))
 
 
 # Runner
