@@ -1,46 +1,62 @@
+#  2017 Day 9
+#  ==========
+#
+#  Part 1: 17390
+#  Part 2: 7825
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000000s  (0.333 µs)
+#     Part 1:     0.000587s  (586.7 µs)
+#     Part 2:     0.000000s  (0.292 µs)
+#    Elapsed:     0.000634s  (633.9 µs)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
+
+
 def parse(text):
     return text
 
 
-def score_groups(stream):
+def examine(stream):
     group_score = 0
-    in_garbage = False
-    ignore = False
-    open_groups = 0
     garbage_count = 0
-    for i in range(len(stream)):
+    ignore = False
+    in_garbage = False
+    open_groups = 0
+    for char in stream:
         if ignore:
             ignore = False
             continue
-        match stream[i]:
-            case "!":
-                ignore = True
-            case "<":
-                if in_garbage:
-                    garbage_count += 1
-                in_garbage = True
-            case ">":
+
+        if char == "!":
+            ignore = True
+            continue
+
+        if in_garbage:
+            if char == ">":
                 in_garbage = False
+            else:
+                garbage_count += 1
+            continue
+
+        match char:
+            case "<":
+                in_garbage = True
             case "{":
-                if in_garbage:
-                    garbage_count += 1
-                else:
-                    open_groups += 1
+                open_groups += 1
             case "}":
-                if in_garbage:
-                    garbage_count += 1
-                else:
-                    group_score += open_groups
-                    open_groups -= 1
-            case _:
-                if in_garbage:
-                    garbage_count += 1
+                group_score += open_groups
+                open_groups -= 1
 
     return group_score, garbage_count
 
 
 def part1(stream, args, p1_state):
-    n_groups, n_garbage = score_groups(stream)
+    n_groups, n_garbage = examine(stream)
     p1_state.value = n_garbage
     return n_groups
 
