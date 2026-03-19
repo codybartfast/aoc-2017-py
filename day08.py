@@ -1,15 +1,33 @@
+#  2017 Day 8
+#  ==========
+#
+#  Part 1: 5849
+#  Part 2: 6702
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000286s  (285.7 µs)
+#     Part 1:     0.000157s  (157.2 µs)
+#     Part 2:     0.000000s  (0.333 µs)
+#    Elapsed:     0.000478s  (478.5 µs)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
+
+
 def parse(text):
     def parse_line(line):
         ps = line.split()
         return (ps[0], ps[1], int(ps[2]), ps[4], ps[5], int(ps[6]))
 
-    lines = text.splitlines()
-    return [parse_line(line) for line in lines]
+    return [parse_line(line) for line in text.splitlines()]
 
 
 def run(prog):
     regs = {}
-    maximum = -(10 ** 18)
+    maximum = -1
     for mod_reg, op, diff, comp_reg, comp, comp_val in prog:
         comp_reg_val = regs.get(comp_reg, 0)
         match comp:
@@ -32,12 +50,11 @@ def run(prog):
             val = regs.get(mod_reg, 0) + diff
             if val > maximum:
                 maximum = val
-            regs[mod_reg] = val 
+            regs[mod_reg] = val
     return regs, maximum
 
 
 def part1(prog, args, p1_state):
-    # print(f"\n{data}\n")
     registers, maximum = run(prog)
     p1_state.value = maximum
     return max(registers.values())

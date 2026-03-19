@@ -101,7 +101,7 @@ def present(text, extra_args, parse, part1, part2):
     h_print(f"   Date:  {datetime.now().strftime('%B %Y')}")
     h_print(f"Machine:  {machine()}")
     h_print(f" Python:  {platform.python_version()}")
-    print()
+    print(" ")
 
 
 def friendly_time(span):
