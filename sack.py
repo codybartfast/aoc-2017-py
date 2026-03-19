@@ -7,6 +7,7 @@ import time
 
 YEAR = "2017"
 
+
 # pot mods:
 #   -
 
@@ -113,7 +114,6 @@ def friendly_time(span):
         elif span >= 10:
             places = 2
         return f"{span:.{places}f}"
-        # return " " * (places - 1) + f"{span:.{places}f}" + " " * (3 - places)
 
     if span < 0.001:
         span *= 1_000_000
@@ -121,6 +121,8 @@ def friendly_time(span):
     if span < 1:
         span *= 1_000
         return format(span) + " ms"
+    if span < 60:
+        return format(span) + " s"
     return "write more code"
 
 
