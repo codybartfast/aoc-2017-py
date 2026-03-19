@@ -1,19 +1,32 @@
-def parse(text):
-    def parse_line(line):
-        parts = line.split()
-        return [part for part in parts]
+#  2017 Day 4
+#  ==========
+#
+#  Part 1: 325
+#  Part 2: 119
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000130s  (129.6 µs)
+#     Part 1:     0.000169s  (168.6 µs)
+#     Part 2:     0.000917s  (917.0 µs)
+#    Elapsed:     0.001256s  (1.256 ms)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
 
-    lines = text.splitlines()
-    return [parse_line(line) for line in lines]
+
+def parse(text):
+    return [line.split() for line in text.splitlines()]
 
 
 def part1(pass_phrases, args, p1_state):
-    print(f"\n{pass_phrases}\n")
     return sum(1 for phrase in pass_phrases if len(phrase) == len(set(phrase)))
 
 
-def part2(phrases, args, p1_state):
-    normalised = (list(map(tuple, map(sorted, phrase))) for phrase in phrases)
+def part2(pass_phrases, args, p1_state):
+    normalised = (list(map(tuple, map(sorted, phrase))) for phrase in pass_phrases)
     return sum(1 for norm in normalised if len(norm) == len(set(norm)))
 
 
