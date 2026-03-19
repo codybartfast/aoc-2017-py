@@ -2,10 +2,10 @@ def parse(text):
     return [int(part) for part in text.split()]
 
 
-def reallocate(data):
-    seen = set()
-    seen.add(tuple(data))
+def reallocate(data, part2 = False):
     count = 0
+    seen = {}
+    seen[tuple(data)] = count
     while True:
         count += 1
         (pstn, size) = max(enumerate(data), key=lambda pair: pair[1])
@@ -15,18 +15,18 @@ def reallocate(data):
             data[pstn] += 1
         key = tuple(data)
         if key in seen:
-            return count
-        seen.add(key)
+            return count - seen[key] if part2 else count
+        seen[key] = count
         
         
 
 def part1(data, args, p1_state):
     print(f"\n{data}\n")
-    return reallocate(data)
+    return reallocate(data.copy())
 
 
 def part2(data, args, p1_state):
-    return "ans2"
+    return reallocate(data, True)
 
 
 # Runner
