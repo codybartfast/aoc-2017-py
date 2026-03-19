@@ -6,24 +6,23 @@ def parse(text):
     return [parse_line(line) for line in lines]
 
 
-def jump(offsets):
+def jump(offsets, strange):
     i = 0
     n = 0
     while 0 <= i < len(offsets):
         n += 1
         j = offsets[i]
-        offsets[i] += 1
+        offsets[i] += -1 if strange and j >= 3 else 1
         i += j
     return n
 
 
 def part1(data, args, p1_state):
-    print(f"\n{data}\n")
-    return jump(data)
+    return jump(data.copy(), False)
 
 
 def part2(data, args, p1_state):
-    return "ans2"
+    return jump(data, True)
 
 
 # Runner
