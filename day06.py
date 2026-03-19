@@ -1,32 +1,52 @@
+#  2017 Day 6
+#  ==========
+#
+#  Part 1: 4074
+#  Part 2: 2793
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000003s  (3.291 µs)
+#     Part 1:     0.005030s  (5.030 ms)
+#     Part 2:     0.000000s  (0.333 µs)
+#    Elapsed:     0.005078s  (5.078 ms)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
+
+
 def parse(text):
     return [int(part) for part in text.split()]
 
 
-def reallocate(data, part2 = False):
-    count = 0
+def reallocate(memory):
+    cycles = 0
     seen = {}
-    seen[tuple(data)] = count
+    seen[tuple(memory)] = cycles
     while True:
-        count += 1
-        (pstn, size) = max(enumerate(data), key=lambda pair: pair[1])
-        data[pstn] = 0
+        cycles += 1
+        (bank, size) = max(enumerate(memory), key=lambda pair: pair[1])
+        memory[bank] = 0
         for _ in range(size):
-            pstn = (pstn + 1) % len(data)
-            data[pstn] += 1
-        key = tuple(data)
+            bank = (bank + 1) % len(memory)
+            memory[bank] += 1
+        key = tuple(memory)
         if key in seen:
-            return count - seen[key] if part2 else count
-        seen[key] = count
+            return cycles, cycles - seen[key]
+        seen[key] = cycles
         
         
 
-def part1(data, args, p1_state):
-    print(f"\n{data}\n")
-    return reallocate(data.copy())
+def part1(memory, args, p1_state):
+    ans1, ans2 = reallocate(memory)
+    p1_state.value = ans2
+    return ans1
 
 
-def part2(data, args, p1_state):
-    return reallocate(data, True)
+def part2(_, __, p1_state):
+    return p1_state.value
 
 
 # Runner
