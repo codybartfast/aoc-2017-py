@@ -6,31 +6,38 @@
 #
 #  Timings
 #  --------------------------------------
-#      Parse:     0.000003s  (3.333 µs)
-#     Part 1:     0.000069s  (69.08 µs)
-#     Part 2:     0.009871s  (9.871 ms)
-#    Elapsed:     0.009987s  (9.987 ms)
+#      Parse:     0.000003s  (3.167 µs)
+#     Part 1:     0.000027s  (26.58 µs)
+#     Part 2:     0.001231s  (1.231 ms)
+#    Elapsed:     0.001296s  (1.296 ms)
 #  --------------------------------------
 #
 #     Date:  March 2026
 #  Machine:  MacBook M4
 #   Python:  3.14.3
 
+
+from array import array
+
+
 def parse(text):
     return text, tuple(map(int, text.split(",")))
 
 
-def knot(data, lengths, rounds):
-    pstn = 0
+def knot(lengths, rounds):
+    # data always begins at the current position.  pstn tracks the nominal
+    # current position. At end pstn is used to shift data so it starts at '0'
+    # rather than current position.
+    data = array("B", range(256))
     skip = 0
     for _ in range(rounds):
         for length in lengths:
-            data = data[pstn:] + data[:pstn]
-            data = list(reversed(data[:length])) + data[length:]
-            data = data[-pstn:] + data[:-pstn]
-            pstn = (pstn + length + skip) % len(data)
-            skip += 1
-    return data
+            data[:length] = data[:length][::-1]
+            shift = (length + skip) % 256
+            data = data[shift:] + data[:shift]
+            skip = (skip + 1) % 256
+    pstn = (sum(lengths) * rounds + skip * (skip - 1) // 2) % 256
+    return data[-pstn:] + data[:-pstn]
 
 
 def dense_hash(hash):
@@ -45,18 +52,15 @@ def dense_hash(hash):
 
 def part1(data, args, p1_state):
     _, lengths = data
-    size = 5 if len(lengths) == 4 else 256
-    knotted = knot(list(range(size)), lengths, 1)
+    knotted = knot(lengths, 1)
     return knotted[0] * knotted[1]
 
 
 def part2(data, args, p1_state):
     text, _ = data
     lengths = list(text.encode()) + [17, 31, 73, 47, 23]
-    knotted = knot(list(range(256)), lengths, 64)
+    knotted = knot(lengths, 64)
     return dense_hash(knotted)
-
-
 
 
 # Runner
