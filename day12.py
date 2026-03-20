@@ -22,15 +22,26 @@ def find_group(prog, links):
                     new_found.append(other)
                 known.add(other)
         found = new_found
-    return list(known)
+    return known
+
+
+def find_groups(links):
+    unseen = set(links.keys())
+    groups = []
+    while unseen:
+        n = unseen.pop()
+        group = find_group(n, links)
+        groups.append(group)
+        unseen.difference_update(group)
+    return groups
 
 
 def part1(links, args, p1_state):
     return len(find_group(0, links))
 
 
-def part2(data, args, p1_state):
-    return "ans2"
+def part2(links, args, p1_state):
+    return len(find_groups(links))
 
 
 # Runner
