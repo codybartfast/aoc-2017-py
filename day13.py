@@ -6,10 +6,10 @@
 #
 #  Timings
 #  --------------------------------------
-#      Parse:     0.000013s  (13.04 µs)
-#     Part 1:     0.000005s  (5.250 µs)
-#     Part 2:     1.073112s  (1.073 s)
-#    Elapsed:     1.073192s  (1.073 s)
+#      Parse:     0.000018s  (17.58 µs)
+#     Part 1:     0.000003s  (3.500 µs)
+#     Part 2:     0.719350s  (719.4 ms)
+#    Elapsed:     0.719418s  (719.4 ms)
 #  --------------------------------------
 #
 #     Date:  March 2026
@@ -17,26 +17,21 @@
 #   Python:  3.14.3
 
 
-def parse(text):
+# Suppose could us a sieve of Eratosthenes like approach 🤔
+
+def parse(text): # and convert range to period
     def parse_line(line):
         parts = line.split(": ")
-        return int(parts[0]), int(parts[1])
+        return int(parts[0]), (int(parts[1]) - 1) * 2
 
     return [parse_line(line) for line in text.splitlines()]
 
-def is_caught(depth, range, time):
-    return time % (2 * (range - 1)) == 0 
-
-
-def any_caught(wall, time):
-    return any(is_caught(depth, range, time + depth) for depth, range in wall)
-    
 
 def part1(wall, args, p1_state):
     serverity = 0
-    for depth, range in wall:
-        if is_caught(depth, range, depth):
-            serverity += depth * range
+    for depth, period in wall:
+        if depth % period == 0:
+            serverity += depth * (period // 2 + 1)
     return serverity
 
 
@@ -44,9 +39,8 @@ def part2(wall, args, p1_state):
     time = -1
     while True:
         time += 1
-        if not any_caught(wall, time):
+        if not any((time + depth) % period == 0 for depth, period in wall):
             return time
-        
 
 
 # Runner
