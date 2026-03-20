@@ -1,6 +1,31 @@
+#  2017 Day 11
+#  ===========
+#
+#  Part 1: 682
+#  Part 2: 1406
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000148s  (147.6 µs)
+#     Part 1:     0.000614s  (613.5 µs)
+#     Part 2:     0.000000s  (0.292 µs)
+#    Elapsed:     0.000799s  (798.7 µs)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
+
+
+
 def parse(text):
     return text.split(",")
 
+
+# If you rotate the hex-grid 45° clockwise then I think it can be treated like
+# a conventional Manhattan grid but with diagnal movement allowed up and to the
+# left / but not up and and to the right \. But unlike most AoC grids North is
+# is +y because it makes the allowed diagnal more intuitive (at least to me). 
 
 DELTAS = {
     "nw": (0, 1),
