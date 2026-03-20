@@ -4,16 +4,29 @@ def parse(text):
     re_digits = re.compile(r"-?\d+")
 
     def parse_line(line):
-        parts = line.split()
-        return [part for part in parts]
-
+        ds = list(map(int, re_digits.findall(line))) # need int?
+        return ds[0], ds[1:]
+        
     lines = text.splitlines()
-    return [parse_line(line) for line in lines]
+    return dict(parse_line(line) for line in lines)
 
 
-def part1(data, args, p1_state):
-    print(f"\n{data}\n")
-    return "ans1"
+def find_group(prog, links):
+    known = set([prog])
+    found = [prog]
+    while found:
+        new_found = []
+        for prog in found:
+            for other in links[prog]:
+                if other not in known:
+                    new_found.append(other)
+                known.add(other)
+        found = new_found
+    return list(known)
+
+
+def part1(links, args, p1_state):
+    return len(find_group(0, links))
 
 
 def part2(data, args, p1_state):
