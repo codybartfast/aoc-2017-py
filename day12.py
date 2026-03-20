@@ -1,14 +1,33 @@
-import re
+#  2017 Day 12
+#  ===========
+#
+#  Part 1: 134
+#  Part 2: 193
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000767s  (766.8 µs)
+#     Part 1:     0.000028s  (28.42 µs)
+#     Part 2:     0.000484s  (484.0 µs)
+#    Elapsed:     0.001328s  (1.328 ms)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
+
 
 def parse(text):
-    re_digits = re.compile(r"-?\d+")
-
     def parse_line(line):
-        ds = list(map(int, re_digits.findall(line))) # need int?
-        return ds[0], ds[1:]
-        
-    lines = text.splitlines()
-    return dict(parse_line(line) for line in lines)
+        prog, neighbours_text = line.split(" <-> ")
+        return prog, neighbours_text.split(", ")
+
+    return dict(
+        (
+            (prog, others.split(", "))
+            for prog, others in (line.split(" <-> ") for line in text.splitlines())
+        )
+    )
 
 
 def find_group(prog, links):
@@ -37,7 +56,7 @@ def find_groups(links):
 
 
 def part1(links, args, p1_state):
-    return len(find_group(0, links))
+    return len(find_group("0", links))
 
 
 def part2(links, args, p1_state):
