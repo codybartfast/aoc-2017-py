@@ -88,14 +88,18 @@ def present(text, extra_args, parse, part1, part2):
     part2_time = pc_part2_after - pc_part2_before
     elapsed = pc_stop - pc_start
 
-    bar_width = 38
+    timings = []
+    timings.append(f"    Parse: {parse_time:12.6f}s  ({friendly_time(parse_time)})")
+    timings.append(f"   Part 1: {part1_time:12.6f}s  ({friendly_time(part1_time)})")
+    timings.append(f"   Part 2: {part2_time:12.6f}s  ({friendly_time(part2_time)})")
+    timings.append(f"  Elapsed: {elapsed:12.6f}s  ({friendly_time(elapsed)})")
+
+    bar_width = max(len(timing) for timing in timings) + 2
     h_print()
     h_print("Timings")
     h_print("-" * bar_width)
-    h_print(f"    Parse: {parse_time:12.6f}s  ({friendly_time(parse_time)})")
-    h_print(f"   Part 1: {part1_time:12.6f}s  ({friendly_time(part1_time)})")
-    h_print(f"   Part 2: {part2_time:12.6f}s  ({friendly_time(part2_time)})")
-    h_print(f"  Elapsed: {elapsed:12.6f}s  ({friendly_time(elapsed)})")
+    for timing in timings:
+        h_print(timing)
     h_print("-" * bar_width)
     h_print()
     h_print(f"   Date:  {datetime.now().strftime('%B %Y')}")
@@ -123,7 +127,23 @@ def friendly_time(span):
         return format(span) + " ms"
     if span < 60:
         return format(span) + " s"
-    return "write more code"
+    if span < 600:
+        m = int(span // 60)
+        s = span - m * 60
+        return f"{m}m {s:0.1f}s"
+    if span < 600:
+        m = int(span // 60)
+        s = span - m * 60
+        return f"{m}m {s:0.1f}s"
+    time_str = ""
+    if span >= 3600:
+        h = int(span // 3600)
+        time_str += f"{h}h "
+        span -= 3600 * h
+    m = int(span // 60)
+    span -= m * 60
+    time_str += f"{m}m {span:.0f}s"
+    return time_str
 
 
 def machine():
