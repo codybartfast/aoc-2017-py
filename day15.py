@@ -17,25 +17,17 @@
 #   Python:  3.14.3
 
 
-import re
-
 def parse(text):
-    re_digits = re.compile(r"-?\d+")
-
-    def parse_line(line):
-        parts = line.split()
-        return int(parts[-1])
-    
-    lines = text.splitlines()
-    return [parse_line(line) for line in lines]
+    return [int(line.split()[-1]) for line in text.splitlines()]
 
 
 def generator(factor, prev, filter):
+    n = prev
     while True:
-        prev *= factor
-        prev %= 2147483647
-        if prev & filter == 0:
-            yield prev
+        n *= factor
+        n %= 2147483647
+        if not n & filter:
+            yield n
 
 
 def part1(data, args, p1_state):
@@ -44,7 +36,7 @@ def part1(data, args, p1_state):
     gen_a = iter(generator(16807, prev_a, 0b0))
     gen_b = iter(generator(48271, prev_b, 0b0))
 
-    mask = (2 ** 16) - 1
+    mask = 0xFFFF
     return sum(next(gen_a) & mask == next(gen_b) & mask for _ in range(40_000_000))
 
 
@@ -54,7 +46,7 @@ def part2(data, args, p1_state):
     gen_a = iter(generator(16807, prev_a, 0b11))
     gen_b = iter(generator(48271, prev_b, 0b111))
 
-    mask = (2 ** 16) - 1
+    mask = 0xFFFF
     return sum(next(gen_a) & mask == next(gen_b) & mask for _ in range(5_000_000))
 
 
