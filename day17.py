@@ -13,7 +13,16 @@ def part1(data, args, p1_state):
 
 
 def part2(data, args, p1_state):
-    return "ans2"
+    buffer = [0]
+    pstn = 0
+    for n in range(1, 50_000_000 + 1):
+        print(f"{n:,}")
+        pstn = (pstn + data + 1) % len(buffer)
+        buffer.insert(pstn, n)
+    print()
+    print(buffer[0])
+    print(buffer[-1])
+    print(buffer[(buffer.index(0) + 1) % len(buffer)])
 
 
 # Runner
