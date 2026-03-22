@@ -1,5 +1,6 @@
 from array import array
 
+
 def parse(text):
     return text
 
@@ -23,7 +24,6 @@ def knot2(lengths):
             n ^= data[i]
         dense.append(format(n, "02x"))
     return "".join(dense)
-    return dense
 
 
 def hex_to_bin(hex):
@@ -40,8 +40,13 @@ def read_disk(key):
         lengths = f"{key}-{n}".encode()
         disk.append(hex_to_bin(knot2(lengths)))
     return disk
-    
 
+def clear_region(disk, len, i):
+    j = -1
+    disk[i] = "0"
+    for j in [i - len, i - 1, i + 1, i + len]:
+        if disk[j] == "1":
+            clear_region(disk, len, j)
 
 def part1(key, args, p1_state):
     disk = read_disk(key)
@@ -49,9 +54,22 @@ def part1(key, args, p1_state):
     return sum(1 for track in disk for b in track if b == "1")
 
 
+def part2(_, __, p1_state):
+    len = 128 + 2
+    disk_strs = p1_state.value
+    disk = ["0"] * len
+    for track_str in disk_strs:
+        disk.append("0")
+        disk.extend(list(track_str))
+        disk.append("0")
+    disk.extend(["0"] * len)
 
-def part2(data, args, p1_state):
-    return "ans2"
+    regions = 0
+    for i, b in enumerate(disk):
+        if b == "1":
+            regions += 1
+            clear_region(disk, len, i)
+    return regions
 
 
 # Runner
