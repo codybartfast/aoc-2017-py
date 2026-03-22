@@ -37,16 +37,28 @@ def dance(progs, moves):
                 progs[i] = b
             case _:
                 assert False, move
-    return progs
+    return "".join(progs)
 
 
 def part1(moves, args, p1_state):
     progs = list("abcdefghijklmnop" if len(moves) != 3 else "abcde")
-    return "".join(dance(progs, moves))
+    return dance(progs, moves)
 
 
-def part2(data, args, p1_state):
-    return "ans2"
+def part2(moves, args, p1_state):
+    progs = "abcdefghijklmnop"
+    seen = {}
+    for count in range(10**18):
+        if progs in seen:
+            break
+        seen[progs] = count
+        progs = dance(list(progs), moves)
+    remaining = (1_000_000_000 - count) % (count - seen[progs])
+    for _ in range(remaining):
+        progs = dance(list(progs), moves)
+    return progs
+            
+    
 
 
 # Runner
