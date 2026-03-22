@@ -1,8 +1,23 @@
-import re
+#  2017 Day 16
+#  ===========
+#
+#  Part 1: namdgkbhifpceloj
+#  Part 2: ibmchklnofjpdeag
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.001439s  (1.439 ms)
+#     Part 1:     0.001089s  (1.089 ms)
+#     Part 2:     0.060846s  (60.85 ms)
+#    Elapsed:     0.063410s  (63.41 ms)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
 
 
 def parse(text):
-    re_digits = re.compile(r"-?\d+")
 
     def parse_part(part):
         match part[0]:
@@ -17,8 +32,7 @@ def parse(text):
             case _:
                 assert False, part
 
-    parts = text.split(",")
-    return [parse_part(part) for part in parts]
+    return [parse_part(part) for part in text.split(",")]
 
 
 def dance(progs, moves):
@@ -37,28 +51,25 @@ def dance(progs, moves):
                 progs[i] = b
             case _:
                 assert False, move
-    return "".join(progs)
+
+    return progs, "".join(progs)
 
 
 def part1(moves, args, p1_state):
     progs = list("abcdefghijklmnop" if len(moves) != 3 else "abcde")
-    return dance(progs, moves)
+    return dance(progs, moves)[1]
 
 
 def part2(moves, args, p1_state):
-    progs = "abcdefghijklmnop"
-    seen = {}
-    for count in range(10**18):
-        if progs in seen:
-            break
-        seen[progs] = count
-        progs = dance(list(progs), moves)
-    remaining = (1_000_000_000 - count) % (count - seen[progs])
-    for _ in range(remaining):
-        progs = dance(list(progs), moves)
-    return progs
-            
-    
+    key = "abcdefghijklmnop"
+    progs = list(key)
+    seen = []
+
+    while key not in seen:
+        seen.append(key)
+        progs, key = dance(progs, moves)
+
+    return seen[(1_000_000_000 - len(seen)) % len(seen)]
 
 
 # Runner

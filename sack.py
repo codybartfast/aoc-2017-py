@@ -9,7 +9,7 @@ YEAR = "2017"
 
 
 # pot mods:
-#   -
+#   - rename present -> run??
 
 
 def get_day():
