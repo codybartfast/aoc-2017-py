@@ -1,3 +1,22 @@
+#  2017 Day 15
+#  ===========
+#
+#  Part 1: 631
+#  Part 2: 279
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000035s  (35.25 µs)
+#     Part 1:     9.069774s  (9.070 s)
+#     Part 2:     4.643134s  (4.643 s)
+#    Elapsed:    13.713082s  (13.71 s)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
+
+
 import re
 
 def parse(text):
@@ -11,25 +30,32 @@ def parse(text):
     return [parse_line(line) for line in lines]
 
 
-def generator(factor, prev):
+def generator(factor, prev, filter):
     while True:
         prev *= factor
         prev %= 2147483647
-        yield prev
+        if prev & filter == 0:
+            yield prev
 
 
 def part1(data, args, p1_state):
     [prev_a, prev_b] = data
 
-    gen_a = iter(generator(16807, prev_a))
-    gen_b = iter(generator(48271, prev_b))
+    gen_a = iter(generator(16807, prev_a, 0b0))
+    gen_b = iter(generator(48271, prev_b, 0b0))
 
     mask = (2 ** 16) - 1
     return sum(next(gen_a) & mask == next(gen_b) & mask for _ in range(40_000_000))
 
 
 def part2(data, args, p1_state):
-    return "ans2"
+    [prev_a, prev_b] = data
+
+    gen_a = iter(generator(16807, prev_a, 0b11))
+    gen_b = iter(generator(48271, prev_b, 0b111))
+
+    mask = (2 ** 16) - 1
+    return sum(next(gen_a) & mask == next(gen_b) & mask for _ in range(5_000_000))
 
 
 # Runner
