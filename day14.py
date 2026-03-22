@@ -1,11 +1,27 @@
-from array import array
+#  2017 Day 14
+#  ===========
+#
+#  Part 1: 8204
+#  Part 2: 1089
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000000s  (0.250 µs)
+#     Part 1:     0.268840s  (268.8 ms)
+#     Part 2:     0.001269s  (1.269 ms)
+#    Elapsed:     0.270161s  (270.2 ms)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
 
 
 def parse(text):
     return text
 
 
-def knot2(lengths):
+def knot_hash(lengths):
     lengths = list(lengths) + [17, 31, 73, 47, 23]
     data = list(range(256))
     pstn = 0
@@ -26,49 +42,48 @@ def knot2(lengths):
     return "".join(dense)
 
 
-def hex_to_bin(hex):
-    assert not len(hex) % 2
-    bstr = ""
-    for c in hex:
-        bstr += format(int(c, 16), "04b")
-    return bstr
-
-
-def read_disk(key):
+def generate_disk(key):
     disk = []
     for n in range(128):
         lengths = f"{key}-{n}".encode()
-        disk.append(hex_to_bin(knot2(lengths)))
+        hex = knot_hash(lengths)
+        bin_str = "".join(format(int(c, 16), "04b") for c in hex)
+        disk.append(bin_str)
     return disk
 
+
+def disk_ng(disk_str):
+    width = len(disk_str[0]) + 2
+    disk_ng = ["0"] * width
+    for track_str in disk_str:
+        disk_ng.append("0")
+        disk_ng.extend(list(track_str))
+        disk_ng.append("0")
+    disk_ng.extend(["0"] * width)
+    return disk_ng
+
+
 def clear_region(disk, len, i):
-    j = -1
     disk[i] = "0"
     for j in [i - len, i - 1, i + 1, i + len]:
         if disk[j] == "1":
             clear_region(disk, len, j)
 
+
 def part1(key, args, p1_state):
-    disk = read_disk(key)
+    disk = generate_disk(key)
     p1_state.value = disk
     return sum(1 for track in disk for b in track if b == "1")
 
 
 def part2(_, __, p1_state):
-    len = 128 + 2
-    disk_strs = p1_state.value
-    disk = ["0"] * len
-    for track_str in disk_strs:
-        disk.append("0")
-        disk.extend(list(track_str))
-        disk.append("0")
-    disk.extend(["0"] * len)
-
+    width = 128 + 2
+    disk = disk_ng(p1_state.value)
     regions = 0
     for i, b in enumerate(disk):
         if b == "1":
             regions += 1
-            clear_region(disk, len, i)
+            clear_region(disk, width, i)
     return regions
 
 
