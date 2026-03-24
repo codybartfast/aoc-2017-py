@@ -1,5 +1,8 @@
-SND = 0
-REG_NAMES = ["_SND", "a", "b", "f", "i", "p"]
+from collections import deque
+
+R_PC = 0
+R_SND_COUNT = 1
+REG_NAMES = ["_PC", "_N_SND", "a", "b", "c", "d", "f", "i", "p"]
 OPS = ["add", "jgz", "mod", "mul", "rcv", "set", "snd"]
 #       0      1      2      3      4      5      6
 
@@ -22,13 +25,16 @@ def parse(text):
     return [parse_line(line) for line in lines]
 
 
-def boot():
-    return [0] * len(REG_NAMES)
+def boot(program_id):
+    prog_reg = REG_NAMES.index("p")
+    regs = [0] * len(REG_NAMES)
+    regs[prog_reg] = program_id
+    return regs
 
 
-def run(regs, prog):
-    pc = 0
-    while 0 <= pc < len(prog):
+def run(prog, regs, snd_q, rcv_q, part2=False):
+    pc = regs[R_PC]
+    while 0 <= regs[R_PC] < len(prog):
         match prog[pc]:
             # add
             case (0, (1, r), (arg2_type, val2)):
@@ -36,7 +42,7 @@ def run(regs, prog):
                 pc += 1
             # jgz
             case (1, (arg1_type, val1), (arg2_type, val2)):
-                if (regs[val1] if arg1_type else val1):
+                if 0 < (regs[val1] if arg1_type else val1):
                     pc += regs[val2] if arg2_type else val2
                 else:
                     pc += 1
@@ -49,31 +55,56 @@ def run(regs, prog):
                 regs[r] *= regs[val2] if arg2_type else val2
                 pc += 1
             # rcv
-            case (4, (arg1_type, val1)):
-                if (regs[val1] if arg1_type else val1):
-                    return regs[SND]
-                pc += 1
+            case (4, (1, val1)):
+                if part2:
+                    if rcv_q:
+                        regs[val1] = rcv_q.popleft()
+                        pc += 1
+                    else:
+                        regs[R_PC] = pc
+                        return "waiting"
+                else:
+                    if regs[val1]:
+                        return rcv_q.pop()
             # set
             case (5, (1, r), (arg2_type, val2)):
                 regs[r] = regs[val2] if arg2_type else val2
                 pc += 1
             # snd
             case (6, (arg1_type, val1)):
-                regs[SND] = regs[val1] if arg1_type else val1
+                snd_q.append(regs[val1] if arg1_type else val1)
+                regs[R_SND_COUNT] += 1
                 pc += 1
             case _:
                 assert False, prog[pc]
 
     assert False, regs
-    
 
 
 def part1(prog, args, p1_state):
-    return run(boot(), prog)
+    queue = deque()
+    return run(prog, boot(0), queue, queue)
 
 
 def part2(prog, args, p1_state):
-    return "ans2"
+    regs0 = boot(0)
+    regs1 = boot(1)
+
+    from0 = deque()
+    from1 = deque()
+
+    def run0():
+        return run(prog, regs0, from0, from1, True)
+
+    def run1():
+        return run(prog, regs1, from1, from0, True)
+
+    while run0() == "waiting":
+        rslt1 = run1()
+        assert rslt1 == "waiting"
+        if not from0 and not from1:
+            break
+    return regs1[R_SND_COUNT]
 
 
 # Runner
