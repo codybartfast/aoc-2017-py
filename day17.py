@@ -1,22 +1,3 @@
-#  2017 Day 17 - linked
-#  ===========
-#
-#  Part 1: 1025
-#  Part 2: 37803463
-#
-#  Timings
-#  --------------------------------------
-#      Parse:     0.000001s  (0.875 µs)
-#     Part 1:     0.007267s  (7.267 ms)
-#     Part 2:   219.773509s  (3m 39.8s)
-#    Elapsed:   219.780856s  (3m 39.8s)
-#  --------------------------------------
-#
-#     Date:  March 2026
-#  Machine:  MacBook M4
-#   Python:  3.14.3
-
-
 #  2017 Day 17
 #  ===========
 #
@@ -36,13 +17,21 @@
 #   Python:  3.14.3
 
 
+# I also did a linked list version:
+#
+#     Elapsed:   219.780856s  (3m 39.8s)
+#
+# And I let a naive array solution run its course:
+#
+#    Elapsed: 43114.205839s  (11h 58m 34s)
+#
+# Only when I finished did I look at other people's solutions and realise it's a
+# much simpler task than I made it.  Because 0 is always at start and can't move
+# the question is really what ends in positon 1.  To do that we don't need track
+# the contents of any other position.
+
+
 from array import array
-
-
-class Node:
-    def __init__(self, value, next=None):
-        self.value = value
-        self.next = next
 
 
 def parse(text):
@@ -52,7 +41,7 @@ def parse(text):
 def spin(size, steps):
     max_buff = 2**11
 
-    buffers = [array('I', [0])]
+    buffers = [array("I", [0])]
     b, i = 0, 0
     for n in range(1, size + 1):
         remaining = steps + 1
@@ -66,7 +55,7 @@ def spin(size, steps):
                 b = (b + 1) % len(buffers)
                 i = 0
         buffers[b].insert(i, n)
-        
+
         if len(buffers[b]) > max_buff:
             buff0 = buffers.pop(b)
             size = len(buff0) // 2
