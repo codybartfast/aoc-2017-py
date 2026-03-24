@@ -7,13 +7,15 @@ def parse(text):
 
 def follow(diag, pstn):
     x, y, line, dx, dy = pstn
+    count = 0
     trace = []
 
     while True:
+        count += 1
         nx, ny = x + dx, y + dy
         c = diag[ny][nx]
         if c == " ":
-            return trace
+            return trace, count
         if c.isalpha():
             trace.append(c)
         if c == line:
@@ -32,13 +34,14 @@ def follow(diag, pstn):
 
 
 def part1(diag, args, p1_state):
-    print(f"\n{'\n'.join(diag)}\n")
     pstn = (diag[0].index("|"), 0, "|", 0, 1)
-    return "".join(follow(diag, pstn))
+    trace, count = follow(diag, pstn) 
+    p1_state.value = count
+    return "".join(trace)
 
 
 def part2(data, args, p1_state):
-    return "ans2"
+    return p1_state.value
 
 
 # Runner
