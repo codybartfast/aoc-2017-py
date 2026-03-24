@@ -1,4 +1,20 @@
-import re
+#  2017 Day 19
+#  ===========
+#
+#  Part 1: RYLONKEWB
+#  Part 2: 16016
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.000033s  (32.79 µs)
+#     Part 1:     0.000554s  (554.3 µs)
+#     Part 2:     0.000000s  (0.250 µs)
+#    Elapsed:     0.000620s  (619.6 µs)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
 
 
 def parse(text):
@@ -7,35 +23,33 @@ def parse(text):
 
 def follow(diag, pstn):
     x, y, line, dx, dy = pstn
-    count = 0
+    count = 1
     trace = []
 
     while True:
-        count += 1
-        nx, ny = x + dx, y + dy
-        c = diag[ny][nx]
+        x, y = x + dx, y + dy
+        c = diag[y][x]
         if c == " ":
             return trace, count
-        if c.isalpha():
-            trace.append(c)
+        count += 1
         if c == line:
-            x, y = nx, ny
+            continue
         elif c == "+":
             if line == "|":
                 line = "-"
-                left = diag[ny][nx - 1]
+                left = diag[y][x - 1]
                 dx, dy = (-1, -0) if left == "-" or left.isalpha() else (1, 0)
             else:
-                assert line == "-"
                 line = "|"
-                up = diag[ny - 1][nx]
+                up = diag[y - 1][x]
                 dx, dy = (0, -1) if up == "|" or up.isalpha() else (0, 1)
-        x, y = nx, ny
+        elif c.isalpha():
+            trace.append(c)
 
 
 def part1(diag, args, p1_state):
     pstn = (diag[0].index("|"), 0, "|", 0, 1)
-    trace, count = follow(diag, pstn) 
+    trace, count = follow(diag, pstn)
     p1_state.value = count
     return "".join(trace)
 
