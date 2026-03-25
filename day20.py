@@ -1,3 +1,22 @@
+#  2017 Day 20
+#  ===========
+#
+#  Part 1: 144
+#  Part 2: 477
+#
+#  Timings
+#  --------------------------------------
+#      Parse:     0.002184s  (2.184 ms)
+#     Part 1:     0.000147s  (147.1 µs)
+#     Part 2:     0.011031s  (11.03 ms)
+#    Elapsed:     0.013402s  (13.40 ms)
+#  --------------------------------------
+#
+#     Date:  March 2026
+#  Machine:  MacBook M4
+#   Python:  3.14.3
+
+
 from itertools import batched
 import re
 
@@ -12,7 +31,7 @@ def parse(text):
     return [(i, parse_line(line)) for i, line in enumerate(lines)]
 
 
-def magn(v):
+def magnitude(v):
     x, y, z = v
     return abs(x) + abs(y) + abs(z)
 
@@ -29,7 +48,7 @@ def position(particle):
     return particle[1][0]
 
 
-def accln(particle):
+def acceleration(particle):
     return particle[1][2]
 
 
@@ -41,29 +60,20 @@ def tick(particle):
 
 
 def part1(particles, args, p1_state):
-    particles = sorted(particles, key=lambda p: magn(accln(p)))
+    particles = sorted(particles, key=lambda p: magnitude(acceleration(p)))
     return id(particles[0])
 
 
 def part2(particles, args, p1_state):
-    quiet_limit = 100
+    quiet_limit = 16
     quiet_count = 0
     while quiet_count < quiet_limit:
         seen, dups = set(), set()
         for particle in particles:
             pstn = position(particle)
-            if pstn in seen:
-                dups.add(pstn)
-            else:
-                seen.add(pstn)
-        if dups:
-            quiet_count = 0
-        else:
-            quiet_count += 1
-
-        particles = [
-            tick(particle) for particle in particles if position(particle) not in dups
-        ]
+            (dups if pstn in seen else seen).add(pstn)
+        quiet_count = 0 if dups else quiet_count + 1
+        particles = [tick(p) for p in particles if position(p) not in dups]
 
     return len(particles)
 
