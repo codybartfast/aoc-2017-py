@@ -72,10 +72,6 @@ def count_pixels(
         value = sum(three.count("#") for three in threes)
     else:
         next_threes = three_to_threes[three]
-        for next_three in next_threes:
-            print()
-            for line in next_three.split("/"):
-                print(line)
         value = sum(
             count_pixels(
                 next_three,
@@ -104,16 +100,31 @@ def threes_to_twos(threes, normal2):
     ]
 
 
+def split_nine(nine):
+    threes = []
+    for y in range(0, 9, 3):
+        for x in range(0, 9, 3):
+            threes.append(
+                "".join(nine[y][x : x + 3])
+                + "/"
+                + "".join(nine[y + 1][x : x + 3])
+                + "/"
+                + "".join(nine[y + 2][x : x + 3])
+            )
+    return threes
+
+
 def solve(two_to_three, three_to_four, iterations):
     normal2 = normaliser(two_to_three)
     normal3 = normaliser(three_to_four)
 
     three_to_threes = {}
-    for three, four in three_to_four.items():
-        gen1_twos = split_four(four, normal2)
-        gen2_threes = [normal3[two_to_three[two]] for two in gen1_twos]
-        gen2_twos = threes_to_twos(gen2_threes, normal2)
-        three_to_threes[three] = [normal3[two_to_three[two]] for two in gen2_twos]
+    for three in three_to_four.keys():
+        nine = solve2(
+            three.split("/"), 3, two_to_three, three_to_four, normal2, normal3
+        )
+        threes = split_nine(nine)
+        three_to_threes[three] = [normal3[three] for three in threes]
 
     three = ".#./..#/###"
 
@@ -169,18 +180,19 @@ def solve2(grid, iterations, two_to_three, three_to_four, normal2, normal3):
     return solve2(grid, iterations - 1, two_to_three, three_to_four, normal2, normal3)
 
 
+def disp(str_sqr):
+    print("\n".join(str_sqr.split("/")))
+    print()
+
+
 def part1(design, args, p1_state):
-    iterations = int(args[0]) if args else 5
     two_to_three, three_to_four = design
-    normal2 = normaliser(two_to_three)
-    normal3 = normaliser(three_to_four)
-    grid = ".#./..#/###".split("/")
-    grid = solve2(grid, iterations, two_to_three, three_to_four, normal2, normal3)
-    return count(grid)
+    return solve(two_to_three, three_to_four, 5)
 
 
-def part2(data, args, p1_state):
-    return "ans2"
+def part2(design, args, p1_state):
+    two_to_three, three_to_four = design
+    return solve(two_to_three, three_to_four, 18)
 
 
 # Runner
