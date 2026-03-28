@@ -1,8 +1,12 @@
-REG_NAMES = ["program_counter", "a", "b", "c", "d", "e", "f", "g", "h"]
-R_PC = 0
+REG_NAMES = ["a", "b", "c", "d", "e", "f", "g", "h"]
+REG_B = REG_NAMES.index("b")
+REG_D = REG_NAMES.index("d")
+REG_F = REG_NAMES.index("f")
+REG_H = REG_NAMES.index("h")
 
-OPS = ["jnz", "mul", "set", "sub"]
-#       0      1      2      3      4      5      6
+OPS = ["jnz", "mul", "set", "sub", "patch"]
+#       0      1      2      3      4        5      6
+
 
 def parse(text):
     def parse_arg(arg):
@@ -15,20 +19,25 @@ def parse(text):
     return [parse_line(line) for line in text.splitlines()]
 
 
-def boot():
+def boot(a=0):
     regs = [0] * len(REG_NAMES)
+    regs[REG_NAMES.index("a")] = a
     return regs
 
 
 def run(prog, regs):
-    pc = regs[R_PC]
+    pc = 0
     n_mul = 0
     while 0 <= pc < len(prog):
         op, (t1, a1), (t2, a2) = prog[pc]
         match op:
             # jnz
             case 0:
-                pc += (regs[a2] if t2 else a2) if (regs[a1] if t1 else a1) else 1
+                # pc += (regs[a2] if t2 else a2) if (regs[a1] if t1 else a1) else 1
+                if regs[a1] if t1 else a1:
+                    pc += regs[a2] if t2 else a2
+                else:
+                    pc += 1
             # mul
             case 1:
                 regs[a1] = regs[a1] * (regs[a2] if t2 else a2)
@@ -40,20 +49,31 @@ def run(prog, regs):
                 pc += 1
             # sub
             case 3:
-                regs[a1] = regs[a1] - (regs[a2] if t2 else a2)                
+                regs[a1] = regs[a1] - (regs[a2] if t2 else a2)
                 pc += 1
+            # patch
+            case 4:
+                b = regs[REG_B]
+                d = regs[REG_D]
+                if b % d == 0:
+                    regs[REG_F] = 0
+                    pc += 15
+                else:
+                    pc += 10
             case _:
                 assert False, prog[pc]
-
-    return n_mul
+    return n_mul, regs[REG_H]
 
 
 def part1(prog, args, p1_state):
-    return run(prog, boot())
+    return run(prog, boot())[0]
 
 
-def part2(data, args, p1_state):
-    return "ans2"
+def part2(prog, args, p1_state):
+    prog = list(prog)
+    prog[10] = (OPS.index("patch"), (-1, -1), (-1, -1))
+    prog = tuple(prog)
+    return run(prog, boot(1))[1]
 
 
 # Runner
