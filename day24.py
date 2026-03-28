@@ -11,7 +11,7 @@ def bridges(mags, bridge, type, strength):
         if type in mag:
             bridge.append(mag)
             strength += mag[0] + mag[1]
-            yield bridge, strength
+            yield bridge, strength, len(bridge)
             next_type = mag[1 - mag.index(type)]
             yield from bridges(mags, bridge, next_type, strength)
             bridge.pop()
@@ -21,11 +21,11 @@ def bridges(mags, bridge, type, strength):
 
 
 def part1(mags, args, p1_state):
-    return max(str for bridge, str in bridges(mags, [], 0, 0))
+    return max(str for _, str, _ in bridges(mags, [], 0, 0))
 
 
-def part2(data, args, p1_state):
-    return "ans2"
+def part2(mags, args, p1_state):
+    return sorted(((ln, str) for _, str, ln in bridges(mags, [], 0, 0)), reverse=True)[0][1]
 
 
 # Runner
