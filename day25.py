@@ -32,7 +32,7 @@ def part1(blueprint, args, p1_state):
 
 
 def part2(data, args, p1_state):
-    return "ans2"
+    return "Merry Christmas"
 
 
 # Runner
