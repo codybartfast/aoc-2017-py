@@ -1,4 +1,4 @@
-# Advent of Code 2017
+# Advent of Code 2017 in Python
 
 Code used to help reboot Santa's printer in the excellent [Advent of Code 2017](http://adventofcode.com/2017).
 
